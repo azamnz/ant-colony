@@ -1,0 +1,31 @@
+@startuml sequence_tick
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+title Диаграмма последовательности: кадр анимации
+
+participant "AnimationTimer" as timer
+participant AntApp as app
+participant AppController as c
+participant Colony as col
+participant GraphCanvas as canvas
+
+timer -> app : handle(now)
+alt идёт колония
+  app -> c : tick(прошло нс)
+  c -> c : запас += время · скорость
+  loop пока запас ≥ 1 (не больше 600)
+    c -> col : moveAll()
+    col --> c : цикл закончен?
+    opt выполнено M циклов
+      c -> c : остановиться
+    end
+  end
+  c -> c : progress = дробная часть запаса
+  app -> canvas : draw(..., progress)
+  canvas -> canvas : муравей между from и to\nна доле progress
+else пауза
+  app -> app : ничего не рисовать
+end
+@enduml

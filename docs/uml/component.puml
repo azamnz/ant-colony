@@ -1,0 +1,31 @@
+@startuml component
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+title Диаграмма компонентов (модуль aco)
+
+package "Модуль aco" {
+  component "aco\n(Launcher)" as launcher
+  component "aco.view\n(окно JavaFX: AntApp,\nGraphCanvas)" as view
+  component "aco.controller\n(логика окна: AppController,\nSettingsForm, Texts, SpeedScale)" as controller
+  component "aco.colony\n(Ant, Colony, Tour,\nCycleStats, BruteForce)" as colony
+  component "aco.model\n(Node, Path, Graph,\nScenarios, Settings)" as model
+}
+
+component "JavaFX\n(javafx.controls,\njavafx.graphics)" as javafx
+component "JUnit 6\n(только тесты)" as junit
+
+launcher ..> view
+launcher ..> javafx
+view ..> controller
+view ..> colony
+view ..> model
+view ..> javafx
+controller ..> colony
+controller ..> model
+colony ..> model
+junit ..> controller
+junit ..> colony
+junit ..> model
+@enduml

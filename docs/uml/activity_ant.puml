@@ -1,0 +1,29 @@
+@startuml activity_ant
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+title Диаграмма деятельности: ход муравья
+
+start
+:Муравей в городе r;
+if (посещены все города?) then (нет)
+  :Кандидаты — пути\nв непосещённые города;
+else (да)
+  if (уже дома?) then (да)
+    :Маршрут закончен;
+    stop
+  else (нет)
+    :Кандидаты — пути домой;
+  endif
+endif
+:Вес каждого пути\nw = τ^α · (1/d)^β;
+if (сумма весов > 0?) then (да)
+  :P = w / Σw;
+else (нет: феромон ушёл в ноль)
+  :Все пути равновероятны;
+endif
+:Случайное r ∈ [0, 1):\nрулетка по накопленным P;
+:Пройти выбранный путь,\nотметить город посещённым;
+stop
+@enduml

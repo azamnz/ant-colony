@@ -1,0 +1,35 @@
+@startuml sequence_cycle
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+title Диаграмма последовательности: кнопка «Цикл»
+
+actor Пользователь as user
+participant AntApp as app
+participant AppController as c
+participant Colony as col
+participant "ant: Ant" as ant
+participant "path: Path" as p
+participant GraphCanvas as canvas
+
+user -> app : «Цикл»
+app -> c : cycleStep()
+c -> col : runCycle()
+loop пока не все муравьи дома
+  col -> col : moveAll()
+  loop для каждого муравья не дома
+    col -> ant : chooseNext(settings, random)
+    ant -> ant : probabilities():\nτ^α · (1/d)^β / Σ
+    ant --> col : path
+    col -> ant : move(path)
+  end
+end
+col -> col : endCycle()
+col -> p : deposit(ρ · ΣQ/L)
+col -> p : evaporate(ρ)
+col -> col : CycleStats, лучший маршрут
+col -> ant : reset()
+app -> canvas : draw(...)
+app -> app : график и журнал
+@enduml

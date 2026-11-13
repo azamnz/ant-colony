@@ -1,0 +1,38 @@
+@startuml usecase
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+left to right direction
+title Диаграмма прецедентов
+
+actor Пользователь as user
+actor "Муравей" as ant
+
+rectangle "Программа «Алгоритм муравьёв»" {
+  usecase "Выбрать граф:\nшестиугольник, два муравья,\nслучайные города" as UC1
+  usecase "Поставить или убрать\nгород щелчком" as UC2
+  usecase "Задать параметры\nα, β, ρ, Q, τ₀, e, M" as UC3
+  usecase "Запустить / остановить\nколонию" as UC4
+  usecase "Сделать шаг или цикл" as UC5
+  usecase "Смотреть феромон,\nлучший маршрут, график" as UC6
+  usecase "Сравнить с оптимумом\n(перебор)" as UC7
+  usecase "Выбрать следующий путь\nпо вероятности" as UC8
+  usecase "Переместиться по пути" as UC9
+  usecase "Оставить феромон Q/L" as UC10
+}
+
+user --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+UC6 ..> UC7 : <<include>>
+UC4 ..> UC9 : <<include>>
+UC5 ..> UC9 : <<include>>
+ant --> UC8
+ant --> UC9
+ant --> UC10
+UC9 ..> UC8 : <<include>>
+@enduml

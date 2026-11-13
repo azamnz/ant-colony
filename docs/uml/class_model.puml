@@ -1,0 +1,105 @@
+@startuml class_model
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+title Диаграмма классов: среда и колония
+
+package aco.model {
+  class Node <<record>> {
+    +id: int
+    +label: String
+    +x, y: double
+    +distanceTo(other): double
+  }
+  class Path {
+    -length: double
+    -pheromone: double
+    +other(from): Node
+    +touches(n): boolean
+    +reset(tau0)
+    +deposit(amount)
+    +evaporate(rho)
+  }
+  class Graph {
+    -nest: Node
+    +{static} complete(nodes): Graph
+    +pathsFrom(n): List<Path>
+    +pathsBetween(a, b): List<Path>
+    +maxPheromone(): double
+  }
+  class Scenarios {
+    +{static} hexagon(): Graph
+    +{static} twoAnts(): Graph
+    +{static} random(n, seed): Graph
+  }
+  class Settings <<record>> {
+    +ants: int
+    +alpha, beta, rho: double
+    +q, tau0, elite: double
+    +cycles: int
+    +{static} defaults(): Settings
+    +{static} pdf(): Settings
+  }
+  class InvalidSettingsException
+}
+
+package aco.colony {
+  class Ant <<муравей>> {
+    -home: Node
+    -current: Node
+    -visited: Set<Node>
+    +candidates(): List<Path>
+    +probabilities(s): Map<Path, Double>
+    +chooseNext(s, random): Path
+    +move(path)
+    +step(s, random)
+    +finished(): boolean
+    +tour(): Tour
+    +reset()
+  }
+  class Colony {
+    -random: Random
+    -best: Tour
+    +moveAll(): boolean
+    +runCycle()
+    +run()
+    +done(): boolean
+    +history(): List<CycleStats>
+    ~{static} deposit(paths, tours, best, s)
+    ~{static} evaporate(paths, s)
+  }
+  class Tour <<record>> {
+    +paths: List<Path>
+    +length: double
+    +route(): List<Integer>
+  }
+  class CycleStats <<record>> {
+    +cycle: int
+    +best, average, bestSoFar: double
+    +sameRoute: double
+    +usedPaths: int
+  }
+  class Hop <<record>>
+  class BruteForce {
+    +{static} shortest(graph): double
+  }
+}
+
+Graph o-- "2..*" Node
+Graph o-- "1..*" Path
+Path --> "2" Node
+Scenarios ..> Graph
+Settings ..> InvalidSettingsException
+Colony --> Graph
+Colony --> Settings
+Colony *-- "*" Ant
+Colony o-- "*" CycleStats
+Colony --> Tour : best
+Colony o-- "*" Hop
+Ant --> Graph
+Ant ..> Tour
+Tour o-- "*" Path
+BruteForce ..> Graph
+@enduml

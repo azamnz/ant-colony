@@ -1,0 +1,71 @@
+@startuml class_app
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+title Диаграмма классов: управление и окно
+
+package aco.controller {
+  enum Scenario {
+    HEXAGON
+    TWO_ANTS
+    RANDOM
+    CUSTOM
+  }
+  class AppController {
+    -scenario: Scenario
+    -graph: Graph
+    -settings: Settings
+    -colony: Colony
+    -speed: int
+    +select(s)
+    +newCities(n)
+    +clickAt(x, y)
+    +applySettings(s)
+    +moveStep()
+    +cycleStep()
+    +runToEnd()
+    +toggleRun()
+    +tick(nanos)
+    +progress(): double
+    +optimum(): Double
+  }
+  class SettingsForm {
+    +{static} parse(texts): FormResult
+    +{static} texts(s): Map
+    +{static} cities(text): int
+  }
+  interface FormResult <<sealed>>
+  class Ok <<record>>
+  class Errors <<record>>
+  class Texts
+  class SpeedScale
+}
+
+package aco.view {
+  class AntApp
+  class GraphCanvas {
+    +draw(cities, graph, colony, progress, hint)
+  }
+}
+
+package javafx {
+  class Application
+  class Pane
+}
+
+AppController --> Scenario
+AppController ..> "aco.colony.Colony"
+AppController ..> "aco.colony.BruteForce"
+FormResult <|.. Ok
+FormResult <|.. Errors
+SettingsForm ..> FormResult
+AntApp --|> Application
+GraphCanvas --|> Pane
+AntApp *-- AppController
+AntApp *-- GraphCanvas
+AntApp ..> SettingsForm
+AntApp ..> Texts
+AntApp ..> SpeedScale
+@enduml

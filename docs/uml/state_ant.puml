@@ -1,0 +1,20 @@
+@startuml state_ant
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam shadowing false
+title Диаграмма состояний: муравей
+
+[*] --> Дома : reset()
+state Дома : посещён только дом
+state "В пути" as Way : есть непосещённые города
+state "Идёт домой" as Back : все города посещены
+state Вернулся : маршрут готов, tour()
+
+Дома --> Way : move(path)
+Way --> Way : move(path)\n[остались непосещённые]
+Way --> Back : move(path)\n[посещён последний город]
+Back --> Вернулся : move(путь домой)
+Вернулся --> Дома : конец цикла: reset()
+Вернулся --> Вернулся : step() — стоит на месте
+@enduml
