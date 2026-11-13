@@ -69,16 +69,19 @@ public final class SettingsForm {
                 }
             }
         }
-        if (!errors.isEmpty()) {
-            return new FormResult.Errors(errors);
+        // нечитаемые поля временно берутся из умолчаний: так проверяются диапазоны остальных
+        Map<String, String> defaults = texts(Settings.defaults());
+        for (String field : errors.keySet()) {
+            values.put(field, Double.parseDouble(defaults.get(field)));
         }
         try {
-            return new FormResult.Ok(new Settings(values.get("ants").intValue(), values.get("alpha"),
+            Settings s = new Settings(values.get("ants").intValue(), values.get("alpha"),
                     values.get("beta"), values.get("rho"), values.get("q"), values.get("tau0"), values.get("elite"),
-                    values.get("cycles").intValue()));
+                    values.get("cycles").intValue());
+            return errors.isEmpty() ? new FormResult.Ok(s) : new FormResult.Errors(errors);
         } catch (InvalidSettingsException e) {
             List<InvalidSettingsException.Problem> problems = e.problems();
-            problems.forEach(p -> errors.put(p.field(), p.message()));
+            problems.forEach(p -> errors.putIfAbsent(p.field(), p.message()));
             return new FormResult.Errors(errors);
         }
     }

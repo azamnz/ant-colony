@@ -65,6 +65,7 @@ public class AntApp extends Application {
     private final XYChart.Series<Number, Number> averageSeries = new XYChart.Series<>();
     private final ListView<String> journal = new ListView<>();
     private final NumberAxis cycleAxis = new NumberAxis();
+    private final ScrollPane panelScroll = new ScrollPane();
     private AnimationTimer timer;
 
     /** Что уже показано: график и журнал дополняются, а не строятся заново */
@@ -243,7 +244,8 @@ public class AntApp extends Application {
         panel.setPadding(new Insets(12));
         panel.setPrefWidth(320);
         panel.setMaxWidth(320);
-        ScrollPane scroll = new ScrollPane(panel);
+        ScrollPane scroll = panelScroll;
+        scroll.setContent(panel);
         scroll.setFitToWidth(true);
         scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scroll.getStyleClass().add("panel");
@@ -329,6 +331,9 @@ public class AntApp extends Application {
                         .map(en -> SettingsForm.FIELDS.get(en.getKey()) + ": " + en.getValue())
                         .collect(Collectors.joining("\n")));
                 message.setText("");
+                // ошибки внизу панели: прокрутить к ним
+                panelScroll.layout();
+                panelScroll.setVvalue(panelScroll.getVmax());
             }
         }
         refresh();

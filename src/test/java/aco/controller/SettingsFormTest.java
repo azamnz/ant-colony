@@ -64,6 +64,17 @@ class SettingsFormTest {
     }
 
     @Test
+    void rangeErrorsShownTogetherWithGarbage() {
+        Map<String, String> m = filled();
+        m.put("alpha", "abc");
+        m.put("rho", "1");
+        m.put("ants", "0");
+        FormResult.Errors e = assertInstanceOf(FormResult.Errors.class, SettingsForm.parse(m));
+        assertEquals(java.util.Set.of("alpha", "rho", "ants"), e.errors().keySet());
+        assertTrue(e.errors().get("alpha").contains("число"));
+    }
+
+    @Test
     void notFiniteNumbersRejected() {
         Map<String, String> m = filled();
         m.put("q", "1e999");
