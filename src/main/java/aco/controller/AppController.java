@@ -66,6 +66,9 @@ public final class AppController {
 
     /** Клик по полю: рядом с городом — убрать его, иначе поставить новый; граф становится «своим» */
     public void clickAt(double x, double y) {
+        if (x < 0 || y < 0 || x > Scenarios.WIDTH || y > Scenarios.HEIGHT) {
+            return;
+        }
         List<Node> next = new ArrayList<>(cities);
         Node near = null;
         for (Node n : cities) {

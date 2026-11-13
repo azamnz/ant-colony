@@ -12,6 +12,8 @@ public final class Scenarios {
     public static final double HEIGHT = 70;
     /** Отступ случайных городов от края поля */
     private static final double MARGIN = 6;
+    /** Случайные города не ближе этого друг к другу, иначе кружки сливаются */
+    public static final double MIN_GAP = 7;
 
     private Scenarios() {
     }
@@ -42,9 +44,12 @@ public final class Scenarios {
     public static Graph random(int n, long seed) {
         Random random = new Random(seed);
         List<Node> nodes = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            nodes.add(new Node(i, String.valueOf(i + 1), MARGIN + random.nextDouble() * (WIDTH - 2 * MARGIN),
-                    MARGIN + random.nextDouble() * (HEIGHT - 2 * MARGIN)));
+        while (nodes.size() < n) {
+            Node candidate = new Node(nodes.size(), String.valueOf(nodes.size() + 1),
+                    MARGIN + random.nextDouble() * (WIDTH - 2 * MARGIN), MARGIN + random.nextDouble() * (HEIGHT - 2 * MARGIN));
+            if (nodes.stream().allMatch(other -> other.distanceTo(candidate) >= MIN_GAP)) {
+                nodes.add(candidate);
+            }
         }
         return Graph.complete(nodes);
     }

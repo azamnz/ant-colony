@@ -142,6 +142,17 @@ class AppControllerTest {
     }
 
     @Test
+    void clickOutsideFieldIsIgnored() {
+        c.clickAt(-1, 10);
+        c.clickAt(50, aco.model.Scenarios.HEIGHT + 0.5);
+        c.clickAt(aco.model.Scenarios.WIDTH + 2, 10);
+        assertEquals(Scenario.HEXAGON, c.scenario());
+        assertEquals(6, c.cities().size());
+        c.clickAt(0, 0);
+        assertEquals(7, c.cities().size());
+    }
+
+    @Test
     void clickOnCityRemovesIt() {
         Node first = c.graph().nodes().getFirst();
         c.clickAt(first.x() + 1, first.y());

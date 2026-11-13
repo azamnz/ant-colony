@@ -103,6 +103,18 @@ class GraphTest {
     }
 
     @Test
+    void randomCitiesDoNotStickTogether() {
+        for (long seed = 1; seed <= 200; seed++) {
+            List<Node> nodes = Scenarios.random(20, seed).nodes();
+            for (int i = 0; i < nodes.size(); i++) {
+                for (int j = i + 1; j < nodes.size(); j++) {
+                    assertTrue(nodes.get(i).distanceTo(nodes.get(j)) >= Scenarios.MIN_GAP, "seed " + seed);
+                }
+            }
+        }
+    }
+
+    @Test
     void randomCitiesAreRepeatableBySeedAndInsideField() {
         Graph g1 = Scenarios.random(8, 5);
         Graph g2 = Scenarios.random(8, 5);
